@@ -4,6 +4,10 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entities/user.entity';
+import { PostModule } from './post/post.module';
+import { PostEntity } from './post/entities/post.entity';
+import { CommentModule } from './comment/comment.module';
+import { CommentEntity } from './comment/entities/comment.entity';
 
 @Module({
   imports: [
@@ -14,10 +18,12 @@ import { UserEntity } from './user/entities/user.entity';
       username: 'postgres',
       password: 'kiriA941',
       database: 'tjournal',
-      entities: [UserEntity],
-      synchronize: true,
+      entities: [UserEntity, PostEntity, CommentEntity],
+      synchronize: true, // для деплоя обязательно отключать
     }),
     UserModule,
+    PostModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
