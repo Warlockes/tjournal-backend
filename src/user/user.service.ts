@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { SearchUserDto } from './dto/search-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 
@@ -37,11 +38,38 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: number, dto: UpdateUserDto) {
+    return this.repository.update(id, dto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.repository.delete(id);
+  }
+
+  async search(dto: SearchUserDto) {
+    const queryBuilder = this.repository.createQueryBuilder('u');
+
+    queryBuilder.limit(dto.limit || 0);
+    queryBuilder.take(dto.take || 10);
+
+    if (dto.fullName) {
+      queryBuilder.andWhere(`u.fullName ILIKE :fullName`);
+    }
+
+    if (dto.email) {
+      queryBuilder.andWhere(`u.email ILIKE :email`);
+    }
+
+    queryBuilder.setParameters({
+      fullName: `%${dto.fullName}%`,
+      email: `%${dto.email}%`,
+    });
+
+    const [users, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      users,
+      total,
+    };
   }
 }
