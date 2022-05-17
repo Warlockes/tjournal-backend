@@ -1,6 +1,28 @@
+import { IsArray, IsOptional, IsString } from 'class-validator';
+
+export type BlockToolData<T extends object = any> = T;
+
+export interface OutputBlockData<
+  Type extends string = string,
+  Data extends object = any,
+> {
+  id?: string;
+  type: Type;
+  data: BlockToolData<Data>;
+}
+
 export class CreatePostDto {
+  @IsString()
   title: string;
-  body: string;
-  category?: string;
-  tags?: string;
+
+  @IsArray()
+  body: OutputBlockData[];
+
+  @IsString()
+  @IsOptional()
+  category: string;
+
+  @IsString()
+  @IsOptional()
+  tags: string;
 }

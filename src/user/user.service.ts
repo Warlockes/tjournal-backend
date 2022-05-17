@@ -15,7 +15,13 @@ export class UserService {
   ) {}
 
   create(dto: CreateUserDto) {
-    return this.repository.save(dto);
+    const { fullName, email, password } = dto;
+
+    return this.repository.save({
+      fullName,
+      email,
+      password,
+    });
   }
 
   findAll() {
@@ -39,7 +45,13 @@ export class UserService {
   }
 
   update(id: number, dto: UpdateUserDto) {
-    return this.repository.update(id, dto);
+    const { email, fullName, password } = dto;
+
+    return this.repository.update(id, {
+      fullName,
+      email,
+      password,
+    });
   }
 
   remove(id: number) {

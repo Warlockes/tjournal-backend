@@ -13,9 +13,11 @@ export class CommentService {
   ) {}
 
   create(dto: CreateCommentDto) {
+    const { text, postId } = dto;
+
     return this.repository.save({
-      text: dto.text,
-      post: { id: dto.postId },
+      text,
+      post: { id: postId },
       user: { id: 1 },
     });
   }
@@ -29,7 +31,11 @@ export class CommentService {
   }
 
   update(id: number, dto: UpdateCommentDto) {
-    return this.repository.update(id, dto);
+    const { text } = dto;
+
+    return this.repository.update(id, {
+      text,
+    });
   }
 
   remove(id: number) {

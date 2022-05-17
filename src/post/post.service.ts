@@ -13,8 +13,18 @@ export class PostService {
     private repository: Repository<PostEntity>,
   ) {}
 
-  create(dto: CreatePostDto) {
-    return this.repository.save(dto);
+  create(dto: CreatePostDto, userId: number) {
+    const { title, body, category, tags } = dto;
+    const { text } = body.find((obj) => obj.type === 'paragraph')?.data;
+
+    return this.repository.save({
+      title,
+      body,
+      category,
+      tags,
+      description: text || '',
+      user: { id: userId },
+    });
   }
 
   findAll() {
@@ -89,13 +99,19 @@ export class PostService {
   }
 
   async update(id: number, dto: UpdatePostDto) {
+    const { title, body, category, tags } = dto;
     const post = await this.repository.findOne({ where: { id } });
 
     if (!post) {
       throw new NotFoundException('Статья не найдена');
     }
 
-    return this.repository.update(id, dto);
+    return this.repository.update(id, {
+      title,
+      body,
+      category,
+      tags,
+    });
   }
 
   async remove(id: number) {
