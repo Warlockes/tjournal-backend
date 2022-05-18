@@ -24,8 +24,7 @@ export class PostEntity {
   @Column()
   description: string;
 
-  @ManyToOne(() => UserEntity, { nullable: false })
-  @JoinColumn({ name: 'userId' })
+  @ManyToOne(() => UserEntity, { nullable: false, eager: true })
   user: UserEntity;
 
   @Column({
