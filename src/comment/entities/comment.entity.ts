@@ -18,7 +18,9 @@ export class CommentEntity {
   @Column()
   text: string;
 
-  @ManyToOne(() => UserEntity, { nullable: false })
+  @ManyToOne(() => UserEntity, {
+    nullable: false,
+  })
   @JoinColumn({ name: 'userId' })
   user: UserEntity;
 

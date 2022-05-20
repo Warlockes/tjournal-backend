@@ -1,7 +1,10 @@
+import { Exclude } from 'class-transformer';
+import { CommentEntity } from 'src/comment/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,7 +20,13 @@ export class UserEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
+  @OneToMany(() => CommentEntity, (comment) => comment.user, {
+    nullable: false,
+    eager: false,
+  })
+  comments: CommentEntity[];
+
+  @Column({ nullable: true, select: false })
   password?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
