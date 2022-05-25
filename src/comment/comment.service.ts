@@ -45,7 +45,7 @@ export class CommentService {
     }));
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.repository.findOne({ where: { id } });
   }
 

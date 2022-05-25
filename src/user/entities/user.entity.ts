@@ -26,6 +26,11 @@ export class UserEntity {
   })
   comments: CommentEntity[];
 
+  @Column({
+    default: 0,
+  })
+  rating: number;
+
   @Column({ nullable: true, select: false })
   password?: string;
 

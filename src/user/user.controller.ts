@@ -46,6 +46,16 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Patch('/rating/:id')
+  changeRating(
+    @Param('id') id: string,
+    @Request() req,
+    @Body() dto: { action: string },
+  ) {
+    return this.userService.changeRating(+id, req.user, dto.action);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete('me')
   remove(@Request() req) {
     return this.userService.remove(req.user.id);

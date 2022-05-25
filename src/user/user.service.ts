@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/comment/entities/comment.entity';
 import { Repository } from 'typeorm';
@@ -51,12 +56,12 @@ export class UserService {
     });
   }
 
-  findByCond(cond: LoginUserDto) {
-    return this.repository.findOne({
-      where: {
-        ...cond,
-      },
-    });
+  async findByCond(cond: LoginUserDto) {
+    return await this.repository
+      .createQueryBuilder('u')
+      .select('*')
+      .where({ ...cond })
+      .getRawOne();
   }
 
   update(id: number, dto: UpdateUserDto) {
@@ -98,5 +103,31 @@ export class UserService {
       users,
       total,
     };
+  }
+
+  async changeRating(id: number, currentUser: UserEntity, action: string) {
+    const user = await this.repository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    if (user.id === currentUser.id) {
+      throw new ForbiddenException('Вы не можете изменить свой рейтинг');
+    }
+
+    switch (action) {
+      case 'increment':
+        user.rating += 1;
+        break;
+      case 'decrement':
+        user.rating -= 1;
+        break;
+      default:
+        throw new BadRequestException('Передаваемый action не валиден');
+    }
+
+    this.repository.save(user);
+    return;
   }
 }
