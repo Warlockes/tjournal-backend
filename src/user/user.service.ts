@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/comment/entities/comment.entity';
 import { Repository } from 'typeorm';
+import { ChangeRatingDto } from './dto/change-rating.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { SearchUserDto } from './dto/search-user.dto';
@@ -105,7 +106,8 @@ export class UserService {
     };
   }
 
-  async changeRating(id: number, currentUser: UserEntity, action: string) {
+  async changeRating(currentUser: UserEntity, dto: ChangeRatingDto) {
+    const { action, id } = dto;
     const user = await this.repository.findOne({ where: { id } });
 
     if (!user) {
@@ -127,7 +129,6 @@ export class UserService {
         throw new BadRequestException('Передаваемый action не валиден');
     }
 
-    this.repository.save(user);
-    return;
+    return this.repository.save(user);
   }
 }

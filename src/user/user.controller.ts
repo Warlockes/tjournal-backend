@@ -13,6 +13,7 @@ import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { SearchUserDto } from './dto/search-user.dto';
+import { ChangeRatingDto } from './dto/change-rating.dto';
 
 @Controller('users')
 export class UserController {
@@ -46,13 +47,9 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('/rating/:id')
-  changeRating(
-    @Param('id') id: string,
-    @Request() req,
-    @Body() dto: { action: string },
-  ) {
-    return this.userService.changeRating(+id, req.user, dto.action);
+  @Patch('/rating')
+  changeRating(@Request() req, @Body() dto: ChangeRatingDto) {
+    return this.userService.changeRating(req.user, dto);
   }
 
   @UseGuards(JwtAuthGuard)
